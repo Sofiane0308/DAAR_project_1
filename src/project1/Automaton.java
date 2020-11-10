@@ -62,7 +62,9 @@ public class Automaton {
         				k++;
         			}
         			k--;
-        			table[i+1][k] = createCell(j);
+        			if(table[i+1][k] == null) table[i+1][k] = createCell(j);
+        			else table[i+1][k].add(j);
+        			
     			}
     			
     		}

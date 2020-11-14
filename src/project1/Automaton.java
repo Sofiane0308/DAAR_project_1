@@ -26,14 +26,6 @@ public class Automaton {
 				if (!states.contains(nextState)) {
 					states.add(nextState);
 				}
-				//check if the next state has at least one letter transition
-				/*boolean hasLetterTransition = false;
-				for (int j=2;j<table[0].length;j++) {
-					if (table[nextState + 1][j] != null) {
-						hasLetterTransition = true;
-						break;
-					}
-				}*/
 				//check recursively for the following epsilon transitions
 				if (table[nextState + 1][1] != null) {
 					states = createNewStatesWithoutEpsilonTransitions(nextState, states, table);
@@ -42,6 +34,25 @@ public class Automaton {
 			}
 		}
 		return states;
+	}
+	//Remove letter transitions for non closure transitions
+	public ArrayList<Integer>[][] cleanTable(ArrayList<Integer>[][] table) {
+		ArrayList<Integer>[][] newTable = table;
+		for (int i=1;i<table.length;i++) {
+			if(table[i][0].size() >= 2) {
+				int length = table[i][0].size();
+				List<Integer> temp = table[i][0].subList(1, length);
+				for (int state: temp) {
+					for (int j=2;j<table[0].length;j++) {
+						if (table[state + 1][j] != null) {
+							table[state + 1][j] = null;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return newTable;
 	}
 	//Eliminate the epsilon transitions
 	public void eliminateEpsilonTransitions() {
@@ -64,19 +75,6 @@ public class Automaton {
 				else {
 					ArrayList<Integer> states = new ArrayList<Integer>();
 					table[i][0] = createNewStatesWithoutEpsilonTransitions(table[i][0].get(0), states, table);
-					//remove letter transitions for non closure transitions
-					if(table[i][0].size() >= 2) {
-						int length = table[i][0].size();
-						List<Integer> temp = table[i][0].subList(1, length);
-						for (int state: temp) {
-							for (int j=2;j<table[0].length;j++) {
-								if (table[state + 1][j] != null) {
-									//table[state + 1][j] = null;
-									break;
-								}
-							}
-						}
-					}
 				}
 				//remove the epsilon transitions
 				table[i][1] = null;
@@ -99,6 +97,8 @@ public class Automaton {
 				}
 			}
 		}
+		//remove letter transitions for non closure transitions
+		table = cleanTable(table);
 		setTable(table);
 	}
 	

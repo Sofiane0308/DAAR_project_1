@@ -48,8 +48,12 @@ public class RegEx {
 				RegExTree ret = parse();
 				System.out.println("  >> Tree result: " + ret.toString() + ".");
 				Automaton a = RegExTreeToAutomaton(ret);
-				System.out.println("=== Table de transition ===");
-				print2D(a.toTable());
+				System.out.println("=== Transition table ===");
+				a.toTable();
+				print2D(a.getTable());
+				System.out.println("=== Eliminating epsilons ===");
+				a.eliminateEpsilonTransitions();
+				print2D(a.getTable());
 			} catch (Exception e) {
 				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
 			}

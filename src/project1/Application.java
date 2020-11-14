@@ -10,7 +10,8 @@ public class Application {
 		Automaton a = buildOperandAutomaton('a');
 		print2D(a.getTransitions());
 		System.out.println("==========");
-		print2D(a.toTable());
+		a.toTable();
+		print2D(a.getTable());
 		
 	}
     static final int EPSILON = 1;

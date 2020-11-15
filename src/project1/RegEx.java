@@ -55,8 +55,8 @@ public class RegEx {
 				print2D(a.getTable());
 				System.out.println("=== End states ===");
 				System.out.println(a.getEnd());
-				System.out.println("=== Minimizing ===");
-				System.out.println(a.n_equivalence());
+				/*System.out.println("=== Minimizing ===");
+				System.out.println(a.n_equivalence());*/
 			} catch (Exception e) {
 				e.printStackTrace();
 				//System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");

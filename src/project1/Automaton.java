@@ -61,6 +61,7 @@ public class Automaton {
 	}
 	//Create new end states after epsilon elimination
 	public ArrayList<Integer> getNewEndStates(int state, ArrayList<Integer> end, ArrayList<Integer>[][] table) {
+		int letterTransition = -5;
 		for (int i=state+1;i<table.length;i++) {
 			for (int j=2;j<table[0].length;j++) {
 				if (table[i][j] != null) {
@@ -69,11 +70,12 @@ public class Automaton {
 					for(int k=2;k<table[0].length;k++) {
 						if (table[table[i][j].get(0) + 1][k] != null) {
 							hasLetterTransition = true;
+							letterTransition = table[table[i][j].get(0) + 1][k].get(0);
 							break;
 						}
 					}
 					//add end state
-					if ((!hasLetterTransition || table[table[i][j].get(0) + 1][0].get(0) == table[i][j].get(0))) {
+					if (!hasLetterTransition || table[table[i][j].get(0) + 1][0].get(0) == letterTransition) {
 						if (!end.contains(table[i][j].get(0))) {
 							end.add(table[i][j].get(0));
 							break;

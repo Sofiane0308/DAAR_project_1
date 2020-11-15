@@ -54,6 +54,8 @@ public class RegEx {
 				System.out.println("=== Eliminating epsilons ===");
 				a.eliminateEpsilonTransitions();
 				print2D(a.getTable());
+				System.out.println("=== End states ===");
+				System.out.println(a.getEnd());
 			} catch (Exception e) {
 				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
 			}
@@ -101,7 +103,9 @@ public class RegEx {
 		transitions[len1][1] = EPSILON;
 		transitions[len1][len - 1] = EPSILON;
 
-		Automaton a = new Automaton(transitions, 0, len - 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len - 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 	//Build a R1.R2 automaton
@@ -127,7 +131,9 @@ public class RegEx {
 		}
 
 		transitions[len1 - 1][len1] = EPSILON;
-		Automaton a = new Automaton(transitions, 0, len - 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len - 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 	//Build R1|R2 automaton
@@ -157,13 +163,17 @@ public class RegEx {
 
 		transitions[len1][len + 1] = EPSILON;
 		transitions[len][len + 1] = EPSILON;
-		Automaton a = new Automaton(transitions, 0, len + 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len + 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 	//Build a character automaton
 	private static Automaton buildOperandAutomaton(int c) {
 		Integer[][] transitions = { { null, c }, { null, null } };
-		Automaton automaton = new Automaton(transitions, 0, 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(1);
+		Automaton automaton = new Automaton(transitions, 0, end);
 		return automaton;
 	}
 	public static void print2D(Integer mat[][]) {

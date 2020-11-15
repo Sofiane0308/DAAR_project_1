@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Automaton {
     private int start;
-    private int end;
+    private ArrayList<Integer> end;
     private int current;
     private Integer[][] transitions;
 	private ArrayList<Integer>[][] table;
@@ -53,6 +53,36 @@ public class Automaton {
 			}
 		}
 		return newTable;
+	}
+	//Create new end states after epsilon elimination
+	public ArrayList<Integer> getNewEndStates(int state, ArrayList<Integer> end, ArrayList<Integer>[][] table) {
+		for (int i=state+1;i<table.length;i++) {
+			for (int j=2;j<table[0].length;j++) {
+				if (table[i][j] != null) {
+					//check if the current state has a letter transition
+					boolean hasLetterTransition = false;
+					for(int k=2;k<table[0].length;k++) {
+						if (table[table[i][j].get(0) + 1][k] != null) {
+							hasLetterTransition = true;
+							break;
+						}
+					}
+					//add end state
+					if ((!hasLetterTransition || table[table[i][j].get(0) + 1][0].get(0) == table[i][j].get(0))) {
+						if (!end.contains(table[i][j].get(0))) {
+							end.add(table[i][j].get(0));
+							break;
+						}
+					}
+					//recursively check for end states
+					else {
+						end = getNewEndStates(table[i][j].get(0), end, table);
+						break;
+					}
+				}
+			}
+		}
+		return end;
 	}
 	//Eliminate the epsilon transitions
 	public void eliminateEpsilonTransitions() {
@@ -100,41 +130,12 @@ public class Automaton {
 		//remove letter transitions for non closure transitions
 		table = cleanTable(table);
 		setTable(table);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end = getNewEndStates(0, end, table);
+		setEnd(end);
 	}
 	
-	/*public boolean[][] isEquivalent() {
-		boolean[][] isEquivalent;
-		ArrayList<Integer>[][] table = this.table;
-		for (int i=1;i<table.length;i++) {
-			if (table )
-		}
-	}
-	// TODO
-	public void minimize() {
-		ArrayList<Integer>[][] table = this.table;
-		int rowsNb = table.length;
-		int columnsNb = table[0].length;
-		ArrayList<Integer>[][] newTable = new ArrayList[rowsNb + 1][columnsNb];
-		newTable = table;
-		ArrayList<Integer> well = new ArrayList<Integer>();
-		well.add(-5);
-		newTable[rowsNb][0] = well;
-		boolean[][] isEquivalent;
-		
-		for (int i=1;i<newTable.length - 1;i++) {
-			for (int j=1; j<newTable[0].length;j++) {
-				if (newTable[i][j] == null) {
-					newTable[i][j] = well;
-				}
-			}
-		}
-		for (int i=1;i<newTable.length - 1;i++) {
-			
-		}
-		setTable(newTable);
-	}*/
-
-    public Automaton(Integer[][] transitions, int start, int end) {
+    public Automaton(Integer[][] transitions, int start, ArrayList<Integer> end) {
         this.start = start;
         this.end = end;
         this.current = start;
@@ -216,11 +217,11 @@ public class Automaton {
 		this.table = table;
 	}
 
-    public int getEnd() {
+    public ArrayList<Integer> getEnd() {
         return end;
     }
 
-    public void setEnd(int end) {
+    public void setEnd(ArrayList<Integer> end) {
         this.end = end;
     }
 

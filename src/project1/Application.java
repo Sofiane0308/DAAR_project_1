@@ -34,8 +34,10 @@ public class Application {
 		transitions[0][1] = EPSILON;
 		transitions[len1][1] = EPSILON;
 		transitions[len1][len - 1] = EPSILON;
-
-		Automaton a = new Automaton(transitions, 0, len - 1);
+		
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len - 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 
@@ -61,7 +63,9 @@ public class Application {
 		}
 
 		transitions[len1 - 1][len1] = EPSILON;
-		Automaton a = new Automaton(transitions, 0, len - 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len - 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 
@@ -91,13 +95,17 @@ public class Application {
 
 		transitions[len1][len + 1] = EPSILON;
 		transitions[len][len + 1] = EPSILON;
-		Automaton a = new Automaton(transitions, 0, len + 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(len + 1);
+		Automaton a = new Automaton(transitions, 0, end);
 		return a;
 	}
 
 	private static Automaton buildOperandAutomaton(int c) {
 		Integer[][] transitions = { { null, c }, { null, null } };
-		Automaton automaton = new Automaton(transitions, 0, 1);
+		ArrayList<Integer> end = new ArrayList<Integer>();
+		end.add(1);
+		Automaton automaton = new Automaton(transitions, 0, end);
 		return automaton;
 	}
 

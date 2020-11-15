@@ -2,7 +2,6 @@ package project1;
 
 import java.util.Scanner;
 import java.util.ArrayList;
-
 import java.lang.Exception;
 
 public class RegEx {
@@ -56,8 +55,11 @@ public class RegEx {
 				print2D(a.getTable());
 				System.out.println("=== End states ===");
 				System.out.println(a.getEnd());
+				System.out.println("=== Minimizing ===");
+				System.out.println(a.n_equivalence());
 			} catch (Exception e) {
-				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
+				e.printStackTrace();
+				//System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
 			}
 		}
 

@@ -1,10 +1,15 @@
 package project1;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
+
 
 public class Automaton {
     private int start;
@@ -192,6 +197,130 @@ public class Automaton {
     	}
     	setTable(table);
     }
+    ArrayList<ArrayList<Integer>> n_equivalence() {
+    	
+    		ArrayList<ArrayList<Integer>> next_equivalence = null;
+    		ArrayList<ArrayList<Integer>> current_equivalence = new ArrayList<ArrayList<Integer>>();
+    		// first equivalence list
+    		ArrayList<Integer> list = new ArrayList<Integer>();
+    		for (int i = 1; i < table.length - 1; i++) {
+    			int state = table[i][0].get(0);
+    			if (state != end)
+    				list.add(state);
+    		}
+    		current_equivalence.add(list);
+    		current_equivalence.add(new ArrayList<Integer>(Arrays.asList(end)));
+    		while (!current_equivalence.equals(next_equivalence)) {
+    			if (next_equivalence != null) current_equivalence = next_equivalence;
+    			next_equivalence = new ArrayList<ArrayList<Integer>>();
+    			// For each set of the current equivalence
+    			for (int i = 0; i < current_equivalence.size(); i++) {
+    				ArrayList<Integer> set = current_equivalence.get(i);
+    				// for each state of the set
+    				// if the set contains only one state
+    				if (set.size() == 1) next_equivalence.add(set);
+    				else {
+    					//contains more than one state
+    					//begin with the first state
+    					Integer state = set.get(0);
+    					next_equivalence.add(new ArrayList<Integer>(Arrays.asList(state)));
+    					//check the other states equivalence
+    					for(int j = 1; j < set.size(); j++) {
+    						int k = 0 ;
+    						boolean found_equivalent = false;
+    						state = set.get(j);
+    						//try the previous states
+    						while(k<j && !found_equivalent) {
+    							Integer state_to_compare_with = set.get(k);
+    							if(are_equivalent(state,state_to_compare_with,current_equivalence)) {
+    								found_equivalent = true;
+    								//insert in next
+    								for(int p = 0 ; p < next_equivalence.size();p++) {
+    									ArrayList<Integer> tmp_set = next_equivalence.get(p);
+    									if(tmp_set.contains(state_to_compare_with)) {
+    										tmp_set.add(state);
+    										break;
+    									}
+    								}
+    							}
+    							k++;
+    						}
+    						//no equivalent states => insert in a new set
+    						if(!found_equivalent) next_equivalence.add(new ArrayList<Integer>(Arrays.asList(state)));
+    					}
+    					
+    				}
+    			}
+    		}
+
+    		return next_equivalence;
+    	
+	}
+    //check if 2 states are equivalent within an equivalence
+	private boolean are_equivalent(Integer state1, Integer state2, ArrayList<ArrayList<Integer>> equivalence) {
+	 
+		for(int i = 2; i < table[0].length; i ++ ) {
+			ArrayList<Integer> cell1 = table[state1+1][i];
+			ArrayList<Integer> cell2 = table[state2+1][i];
+			if (cell1 != null && cell2!= null) {
+				Integer next_state1 = cell1.get(0);
+				Integer next_state2 = cell2.get(0);
+				if(!are_in_the_same_set(next_state1,next_state2,equivalence)) return false;
+			}else if((cell1 == null && cell2 != null)||(cell1 != null && cell2 == null)) return false;
+			
+		}
+		return true;
+	}
+	//check if 2 states are in the same set of an equivalence
+	private boolean are_in_the_same_set(Integer state1, Integer state2, ArrayList<ArrayList<Integer>> equivalence) {
+		for(int i =0; i < equivalence.size(); i++) {
+			ArrayList<Integer> set = equivalence.get(i);
+			if(set.contains(state1) && set.contains(state2)) return true;
+			else if ((set.contains(state1) && !set.contains(state2))|| (!set.contains(state1) && set.contains(state2))) return false;
+		}
+		return false;
+	}
+
+	ArrayList<MatchResponse> search(String path) throws IOException {
+		// Initialisation
+		ArrayList<MatchResponse> response = new ArrayList<MatchResponse>();
+		BufferedReader in = new BufferedReader(new FileReader(path));
+		String str;
+		int line = 1;
+		int startOfWord = 0;
+		// Parcours du texte ligne par ligne
+		while ((str = in.readLine()) != null) {
+			// Line to char array
+			char[] list = str.toCharArray();
+			int current = start;
+			for (int i = 0; i < list.length; i++) {
+				Integer next = accept((int) list[i], current);
+				if (next != null) {
+					if (current == start)
+						startOfWord = i;
+					current = next;
+					if (current == end) {
+						response.add(new MatchResponse(line, i + 1, str.substring(startOfWord, i)));
+						current = start;
+					}
+				} else
+					current = start;
+			}
+
+			line++;
+		}
+
+		return response;
+
+	}
+
+	Integer accept(int c, int current) {
+		for (int i = 2; i < table[0].length; i++) {
+			if (table[0][i].get(0) == c)
+				return table[current][i].get(0);
+		}
+		return null;
+	}
     
     public ArrayList<Integer>[][] getTable() {
 		return this.table;

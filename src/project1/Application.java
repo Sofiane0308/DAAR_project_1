@@ -1,18 +1,20 @@
 package project1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Application {
 
 	public static void main(String[] args) {
-		Automaton a = buildOperandAutomaton('a');
-		print2D(a.getTransitions());
-		System.out.println("==========");
-		a.toTable();
-		print2D(a.getTable());
+		ArrayList<ArrayList<Integer>> list1 = new ArrayList<ArrayList<Integer>>();
+		list1.add(new ArrayList<Integer>(Arrays.asList(2,3)));
 		
+		ArrayList<ArrayList<Integer>> list2 = new ArrayList<ArrayList<Integer>>();
+		list2.add(new ArrayList<Integer>(Arrays.asList(2,3)));
+		
+		System.out.println(list1.equals(list2));
 	}
     static final int EPSILON = 1;
 

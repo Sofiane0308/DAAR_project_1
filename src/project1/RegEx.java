@@ -50,16 +50,24 @@ public class RegEx {
 				System.out.println("=== Transition table ===");
 				a.toTable();
 				print2D(a.getTable());
-				System.out.println("=== Eliminating epsilons ===");
+				System.out.println("=== Final states ===");
+				System.out.println(a.getEnd());
+				System.out.println("=== Eliminating epsilon-transitions ===");
 				a.eliminateEpsilonTransitions();
 				print2D(a.getTable());
-				System.out.println("=== End states ===");
+				System.out.println("=== Final states ===");
 				System.out.println(a.getEnd());
-				System.out.println("=== Minimizing ===");
-				System.out.println(a.n_equivalence());
+				System.out.println("=== Minimized table ===");
+				a.minimize();
+				print2D(a.getTable());
+				System.out.println("=== Final states ===");
+				System.out.println(a.getEnd());
+				ArrayList<MatchResponse> response = a.search("text.txt");
+				System.out.println("Found " + response.size() + " matches:");
+				System.out.println(response);
 			} catch (Exception e) {
 				e.printStackTrace();
-				//System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
+				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
 			}
 		}
 

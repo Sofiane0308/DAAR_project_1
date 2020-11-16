@@ -62,9 +62,9 @@ public class RegEx {
 				print2D(a.getTable());
 				System.out.println("=== Final states ===");
 				System.out.println(a.getEnd());
-				ArrayList<MatchResponse> response = a.search("text.txt");
+				/*ArrayList<MatchResponse> response = a.search("text.txt");
 				System.out.println("Found " + response.size() + " matches:");
-				System.out.println(response);
+				System.out.println(response);*/
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");

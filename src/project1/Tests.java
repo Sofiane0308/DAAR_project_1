@@ -26,7 +26,10 @@ class Tests {
 	void runRegExFoundLowerCaseText_LegalCase() throws Exception {
 		fail("Not yet implemented");
 	}
-
+	@Test
+	void runRegExNoOperands_LegalCase() throws Exception {
+		fail("Not yet implemented");
+	}
 	@Test
 	void getEndTransitionsAfterEpsilonElimination_LegalCase() throws Exception {
 		fail("Not yet implemented");
@@ -45,10 +48,6 @@ class Tests {
 	}
 	@Test
 	void runRegEx_NoText() throws Exception {
-		fail("Not yet implemented");
-	}
-	@Test
-	void runRegEx_NoOperands() throws Exception {
 		fail("Not yet implemented");
 	}
 }

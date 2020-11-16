@@ -34,7 +34,6 @@ public class Automaton {
 				//check recursively for the following epsilon transitions
 				if (table[nextState + 1][1] != null) {
 					states = createNewStatesWithoutEpsilonTransitions(nextState, states, table);
-					//table[nextState + 1][1] = null;
 				}
 			}
 		}
@@ -113,7 +112,19 @@ public class Automaton {
 					ArrayList<Integer> states = new ArrayList<Integer>();
 					table[i][0] = createNewStatesWithoutEpsilonTransitions(table[i][0].get(0), states, table);
 				}
-				//remove the epsilon transitions
+				//remove the epsilon transitions and add them to the id
+				for (int state: table[i][1]) {
+					if (!table[i][0].contains(state)) {
+						table[i][0].add(state);
+						if (table[state + 1][1] != null) {
+							for (int otherState: table[state + 1][1]) {
+								if (!table[i][0].contains(otherState)) {
+									table[i][0].add(otherState);
+								}
+							}
+						}
+					}
+				}
 				table[i][1] = null;
 			}
 			//state without epsilon transitions
@@ -124,11 +135,9 @@ public class Automaton {
 							//add letter transition for merged epsilon transitions
 							if (table[k][0].contains(table[i][0].get(0)) && table[k][j] == null) {
 								table[k][j] = table[i][j];
-								//table[i][j] = null;
 								break;
 							}
 						}
-						//table[i][j] = null;
 						break;
 					}
 				}

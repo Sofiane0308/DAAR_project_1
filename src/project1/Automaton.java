@@ -61,29 +61,7 @@ public class Automaton {
 
 	//Create new end states after epsilon elimination
 	public ArrayList<Integer> getNewEndStates() {
-		/*int letterTransition = -5;
-		for (int i=state+1;i<table.length;i++) {
-			for (int j=2;j<table[0].length;j++) {
-				if (table[i][j] != null) {
-					//check if the current state has a letter transition
-					boolean hasLetterTransition = false;
-					for(int k=2;k<table[0].length;k++) {
-						if (table[table[i][j].get(0) + 1][k] != null) {
-							hasLetterTransition = true;
-							letterTransition = table[table[i][j].get(0) + 1][k].get(0);
-							break;
-						}
-					}
-					//add end state
-					if (!hasLetterTransition || table[table[i][j].get(0) + 1][0].get(0) == letterTransition) {
-						if (!end.contains(table[i][j].get(0))) {
-							end.add(table[i][j].get(0));
-							break;
-						}
-					}
-				}
-			}
-			return end;*/
+		
 			ArrayList<Integer> new_final_states = new ArrayList<Integer>();
 			for (int i = 1 ; i < table.length ; i ++) {
 				ArrayList<Integer> cell = table[i][0]; 
@@ -100,63 +78,27 @@ public class Automaton {
 
 		//Eliminate the epsilon transitions
 		public void eliminateEpsilonTransitions() {
-			ArrayList<Integer>[][] table = this.table;
-			for (int i=1;i<table.length;i++) {
-				//state with epsilon transitions
-				if (table[i][1] != null) {
-					//state with forward epsilon transitions
-					if (table[i][1].get(0) < table[i][0].get(0)) {
-						for (int j=2;j<table[0].length;j++) {
-							//state with a closure transition
-							if (table[table[i][1].get(0) + 1][j] != null) {
-								table[i][j] = table[table[i][1].get(0) + 1][j];
-								table[table[i][1].get(0) + 1][j] = null;
-								break;
-							}
-						}
+			
+			for(int i = 1 ; i < table.length ; i++) {
+				int k = 0;
+				while(k < table[i][0].size()) {
+					Integer subState = table[i][0].get(k);
+					ArrayList<Integer> subClosure = table[subState+1][1];
+					if (subClosure != null) {
+						table[i][0].addAll(subClosure);
 					}
-					//state with a backward epsilon transition
-					else {
-						ArrayList<Integer> states = new ArrayList<Integer>();
-						table[i][0] = createNewStatesWithoutEpsilonTransitions(table[i][0].get(0), states, table);
+					for(int j = 2 ; j < table[0].length ; j ++) {
+						ArrayList<Integer> newTransition = table[subState + 1][j];
+						if(newTransition != null) table[i][j] = newTransition;
 					}
-					//remove the epsilon transitions and add them to the id
-					for (int state: table[i][1]) {
-						if (!table[i][0].contains(state)) {
-							table[i][0].add(state);
-							if (table[state + 1][1] != null) {
-								for (int otherState: table[state + 1][1]) {
-									if (!table[i][0].contains(otherState)) {
-										table[i][0].add(otherState);
-									}
-								}
-							}
-						}
-					}
-					table[i][1] = null;
-				}
-				//state without epsilon transitions
-				else {
-					for (int j=2;j<table[0].length;j++) {
-						if (table[i][j] != null) {
-							for (int k=1;k<table.length;k++) {
-								//add letter transition for merged epsilon transitions
-								if (table[k][0].contains(table[i][0].get(0)) && table[k][j] == null) {
-									table[k][j] = table[i][j];
-									break;
-								}
-							}
-							break;
-						}
-					}
+					k++;
 				}
 			}
-			//remove letter transitions for non closure transitions
-			table = cleanTable(table);
-			setTable(table);
-			ArrayList<Integer> end = new ArrayList<Integer>();
-			end = getNewEndStates();
-			setEnd(end);
+			for(int i = 1 ; i < table.length ; i++) {
+				table[i][1] = null;
+			}
+			setEnd(getNewEndStates());
+			
 		}
 
 	public Automaton(Integer[][] transitions, int start, ArrayList<Integer> end) {
@@ -238,7 +180,7 @@ public class Automaton {
 		current_equivalence.add(list);
 		current_equivalence.add(new ArrayList<Integer>(end));
 		while (!current_equivalence.equals(next_equivalence)) {
-
+			System.out.println("N_equivalence : "+current_equivalence);
 			if (next_equivalence != null)
 				current_equivalence = next_equivalence;
 			next_equivalence = new ArrayList<ArrayList<Integer>>();
@@ -290,9 +232,13 @@ public class Automaton {
 	}
 
 	private boolean is_sink(int state) {
-		for (int i = 1; i < table[0].length; i++) {
-			if (table[state + 1][i] != null)
-				return false;
+		if(state == start) return false;
+		for (int i = 1; i < table.length; i++) {
+			for (int j = 2 ; j < table[0].length ; j++) {
+				ArrayList<Integer> cell = table[i][j];
+				if((cell != null) && (cell.contains(state))) return false;
+			}
+
 		}
 		return true;
 	}

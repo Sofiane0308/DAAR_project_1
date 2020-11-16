@@ -17,7 +17,7 @@ public class RegEx {
 	static final int DOT = 0xD07;
 
 	// REGEX
-	private static String regEx;
+	protected static String regEx;
 
 	// CONSTRUCTOR
 	public RegEx() {
@@ -77,7 +77,7 @@ public class RegEx {
 
 	}
 	//Transform a regex tree to an automaton
-	private static Automaton RegExTreeToAutomaton(RegExTree tree) throws Exception {
+	protected static Automaton RegExTreeToAutomaton(RegExTree tree) throws Exception {
 		if (tree.subTrees.isEmpty()) {
 			return buildOperandAutomaton(tree.root);
 		} else if (tree.root == RegEx.ETOILE) {
@@ -208,7 +208,7 @@ public class RegEx {
 	}
 
 	// FROM REGEX TO SYNTAX TREE
-	private static RegExTree parse() throws Exception {
+	protected static RegExTree parse() throws Exception {
 		// BEGIN DEBUG: set conditionnal to true for debug example
 		if (false)
 			throw new Exception();

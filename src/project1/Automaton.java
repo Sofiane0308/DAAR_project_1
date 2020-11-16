@@ -180,7 +180,7 @@ public class Automaton {
 		current_equivalence.add(list);
 		current_equivalence.add(new ArrayList<Integer>(end));
 		while (!current_equivalence.equals(next_equivalence)) {
-			System.out.println("N_equivalence : "+current_equivalence);
+			//System.out.println("N_equivalence : "+current_equivalence);
 			if (next_equivalence != null)
 				current_equivalence = next_equivalence;
 			next_equivalence = new ArrayList<ArrayList<Integer>>();

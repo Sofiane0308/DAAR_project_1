@@ -18,47 +18,6 @@ public class Automaton {
 	private ArrayList<Integer>[][] table;
 	static final int EPSILON = 1;
 
-	// Create new states by going through epsilon by epsilon
-	private ArrayList<Integer> createNewStatesWithoutEpsilonTransitions(int state, ArrayList<Integer> states,
-			ArrayList<Integer>[][] table) {
-		if (!states.contains(state)) {
-			states.add(state);
-		}
-		// check if the current state has an epsilon transition
-		if (table[state + 1][1] != null) {
-			for (int nextState : table[state + 1][1]) {
-				if (!states.contains(nextState)) {
-					states.add(nextState);
-				}
-				// check recursively for the following epsilon transitions
-				if (table[nextState + 1][1] != null) {
-					states = createNewStatesWithoutEpsilonTransitions(nextState, states, table);
-				}
-			}
-		}
-		return states;
-	}
-
-	// Remove letter transitions for non closure transitions
-	public ArrayList<Integer>[][] cleanTable(ArrayList<Integer>[][] table) {
-		ArrayList<Integer>[][] newTable = table;
-		for (int i = 1; i < table.length; i++) {
-			if (table[i][0].size() >= 2) {
-				int length = table[i][0].size();
-				List<Integer> temp = table[i][0].subList(1, length);
-				for (int state : temp) {
-					for (int j = 2; j < table[0].length; j++) {
-						if (table[state + 1][j] != null) {
-							table[state + 1][j] = null;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return newTable;
-	}
-
 	//Create new end states after epsilon elimination
 	public ArrayList<Integer> getNewEndStates() {
 		

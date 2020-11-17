@@ -62,7 +62,7 @@ public class RegEx {
 				print2D(a.getTable());
 				System.out.println("=== Final states ===");
 				System.out.println(a.getEnd());
-				ArrayList<MatchResponse> response = a.search("text.txt");
+				ArrayList<MatchResponse> response = a.search("books/babylon.txt");
 				System.out.println("Found " + response.size() + " matches:");
 				System.out.println(response);
 			} catch (Exception e) {

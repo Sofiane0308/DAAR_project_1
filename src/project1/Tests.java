@@ -11,26 +11,12 @@ class Tests {
 	
 	private static int actualScore = 0;
 	private static int maxScore = 0;
-	
-	// MACROS
-	static final int CONCAT = 0xC04CA7;
-	static final int ETOILE = 0xE7011E;
-	static final int ALTERN = 0xA17E54;
-	static final int PROTECTION = 92;
-	static final int EPSILON = 1;
 
-	static final int PARENTHESEOUVRANT = 0x16641664;
-	static final int PARENTHESEFERMANT = 0x51515151;
-	static final int DOT = 0xD07;
-
-	// REGEX
-	//private static String regEx;
-	
 	@AfterAll
 	static void tearDownAfterAll() throws Exception {
 		System.out.println("Final score: " + Integer.toString(actualScore) + " / " + Integer.toString(maxScore));
 	}
-	//Test a regex of a word that exists in the text
+	//Test a regex of words that exist in the babylon text
 	@Test
 	void runRegExFoundText_LegalCase() throws Exception {
 		maxScore += 10;
@@ -41,14 +27,14 @@ class Tests {
 			a.toTable();
 			a.eliminateEpsilonTransitions();
 			a.minimize();
-			ArrayList<MatchResponse> response = a.search("text.txt");
+			ArrayList<MatchResponse> response = a.search("books/babylon.txt");
 			assertEquals(30, response.size());
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail();
 		}
 		actualScore += 10;
 	}
-	//Test a regex of a word that does not exist in the text
+	//Test a regex of a word that does not exist in the babylon text
 	@Test
 	void runRegExUnfoundText_LegalCase() throws Exception {
 		maxScore += 10;
@@ -59,14 +45,14 @@ class Tests {
 			a.toTable();
 			a.eliminateEpsilonTransitions();
 			a.minimize();
-			ArrayList<MatchResponse> response = a.search("text.txt");
+			ArrayList<MatchResponse> response = a.search("books/babylon.txt");
 			assertEquals(0, response.size());
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail();
 		}
 		actualScore += 10;
 	}
-	//Test a regex of a word that exists in the text in lower case but not in upper case
+	//Test a regex of a word that exists in the babylon text in lower case but not in upper case
 	@Test
 	void runRegExUpperCaseText_LegalCase() throws Exception {
 		maxScore += 10;
@@ -77,14 +63,14 @@ class Tests {
 			a.toTable();
 			a.eliminateEpsilonTransitions();
 			a.minimize();
-			ArrayList<MatchResponse> response = a.search("text.txt");
+			ArrayList<MatchResponse> response = a.search("books/babylon.txt");
 			assertEquals(0, response.size());
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail();
 		}
 		actualScore += 10;
 	}
-	//Test a regex without operands
+	//Test a regex without operands of a word that exists in the babylon text
 	@Test
 	void runRegExNoOperands_LegalCase() throws Exception {
 		maxScore += 10;
@@ -95,13 +81,13 @@ class Tests {
 			a.toTable();
 			a.eliminateEpsilonTransitions();
 			a.minimize();
-			ArrayList<MatchResponse> response = a.search("text.txt");
+			ArrayList<MatchResponse> response = a.search("books/babylon.txt");
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail();
 		}
 		actualScore += 10;
 	}
-	//Test end states after minimisation
+	//Test end states after minimisation of the regex "a|bc*"
 	@Test
 	void getEndTransitionsAfterMinimisation_LegalCase() throws Exception {
 		maxScore += 10;
@@ -117,8 +103,24 @@ class Tests {
 			endStates.add(2);
 			assertEquals(endStates, a.getEnd());
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail();
 		}
 		actualScore += 10;
+	}
+	//Test a regex with illegal characters
+	@Test
+	void runRegEx_IllegalCharacters() throws Exception {
+		maxScore += 10;
+		RegEx.regEx = "|*";
+		try {
+			RegExTree ret = RegEx.parse();
+			Automaton a = RegEx.RegExTreeToAutomaton(ret);
+			a.toTable();
+			a.eliminateEpsilonTransitions();
+			a.minimize();
+			fail();
+		} catch (Exception e) {
+			actualScore += 10;
+		}
 	}
 }

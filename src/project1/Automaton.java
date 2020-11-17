@@ -27,7 +27,7 @@ public class Automaton {
 
 	// Convert to ArrayLis<Intger> [][] first line for the characters and first
 	// column for the states
-	void toTable() {
+	public void toTable() {
 		// collect character list
 		Set<Integer> set = new HashSet<Integer>();
 		for (int i = 0; i < transitions.length; i++) {
@@ -240,7 +240,7 @@ public class Automaton {
 	}
 
 	// minimize the automaton after epsilon elimination
-	void minimize() {
+	public void minimize() {
 		ArrayList<ArrayList<Integer>> n_equivalence = n_equivalence();
 		ArrayList<Integer> new_final_states = new ArrayList<Integer>();
 		ArrayList<Integer>[][] minimized_table = new ArrayList[n_equivalence.size() + 1][table[0].length];
@@ -282,7 +282,7 @@ public class Automaton {
 		return null;
 	}
 	//search of the regex in a given text
-	ArrayList<MatchResponse> search(String path) throws IOException {
+	public ArrayList<MatchResponse> search(String path) throws IOException {
 		// Initialisation
 		ArrayList<MatchResponse> response = new ArrayList<MatchResponse>();
 		BufferedReader in = new BufferedReader(new FileReader(path));

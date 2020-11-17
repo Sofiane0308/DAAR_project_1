@@ -1,4 +1,9 @@
-package project1;
+package tests;
+
+import project1.RegEx;
+import project1.RegExTree;
+import project1.Automaton;
+import project1.MatchResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 

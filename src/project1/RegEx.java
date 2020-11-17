@@ -45,28 +45,28 @@ public class RegEx {
 			System.err.println("  >> ERROR: empty regEx.");
 		} else {
 			//System.out.print("  >> ASCII codes: [" + (int) regEx.charAt(0));
-			/*for (int i = 1; i < regEx.length(); i++)
+			for (int i = 1; i < regEx.length(); i++)
 				System.out.print("," + (int) regEx.charAt(i));
-			System.out.println("].");*/
+			System.out.println("].");
 			try {
 				RegExTree ret = parse();
-				//System.out.println("  >> Tree result: " + ret.toString() + ".");
+				System.out.println("  >> Tree result: " + ret.toString() + ".");
 				Automaton a = RegExTreeToAutomaton(ret);
-				//System.out.println("=== Transition table ===");
+				System.out.println("=== Transition table ===");
 				a.toTable();
-				/*print2D(a.getTable());
+				print2D(a.getTable());
 				System.out.println("=== Final states ===");
 				System.out.println(a.getEnd());
-				System.out.println("=== Eliminating epsilon-transitions ===");*/
+				System.out.println("=== Eliminating epsilon-transitions ===");
 				a.eliminateEpsilonTransitions();
-				/*print2D(a.getTable());
+				print2D(a.getTable());
 				System.out.println("=== Final states ===");
 				System.out.println(a.getEnd());
-				System.out.println("=== Minimized table ===");*/
+				System.out.println("=== Minimized table ===");
 				a.minimize();
-				/*print2D(a.getTable());
+				print2D(a.getTable());
 				System.out.println("=== Final states ===");
-				System.out.println(a.getEnd());*/
+				System.out.println(a.getEnd());
 				ArrayList<MatchResponse> response = a.search(text_path);
 				response.forEach((rep)-> System.out.println(rep.getLineString()));
 				

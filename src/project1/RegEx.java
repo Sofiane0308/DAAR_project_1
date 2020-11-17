@@ -17,7 +17,7 @@ public class RegEx {
 	static final int DOT = 0xD07;
 
 	// REGEX
-	private static String regEx;
+	protected static String regEx;
 
 	// CONSTRUCTOR
 	public RegEx() {
@@ -215,7 +215,7 @@ public class RegEx {
 	}
 
 	// FROM REGEX TO SYNTAX TREE
-	private static RegExTree parse() throws Exception {
+	protected static RegExTree parse() throws Exception {
 		// BEGIN DEBUG: set conditionnal to true for debug example
 		if (false)
 			throw new Exception();

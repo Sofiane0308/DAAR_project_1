@@ -18,48 +18,6 @@ public class Automaton {
 	private ArrayList<Integer>[][] table;
 	static final int EPSILON = 1;
 
-	//Create new end states after epsilon elimination
-	public ArrayList<Integer> getNewEndStates() {
-		
-			ArrayList<Integer> new_final_states = new ArrayList<Integer>();
-			for (int i = 1 ; i < table.length ; i ++) {
-				ArrayList<Integer> cell = table[i][0]; 
-				for(int j = 0 ; j < cell.size() ; j++) {
-					if(end.contains(cell.get(j))) {
-						new_final_states.add(i-1);
-						break;
-					}
-				}
-			}
-			return new_final_states;
-			
-		}
-
-		//Eliminate the epsilon transitions
-		public void eliminateEpsilonTransitions() {
-			
-			for(int i = 1 ; i < table.length ; i++) {
-				int k = 0;
-				while(k < table[i][0].size()) {
-					Integer subState = table[i][0].get(k);
-					ArrayList<Integer> subClosure = table[subState+1][1];
-					if (subClosure != null) {
-						table[i][0].addAll(subClosure);
-					}
-					for(int j = 2 ; j < table[0].length ; j ++) {
-						ArrayList<Integer> newTransition = table[subState + 1][j];
-						if(newTransition != null) table[i][j] = newTransition;
-					}
-					k++;
-				}
-			}
-			for(int i = 1 ; i < table.length ; i++) {
-				table[i][1] = null;
-			}
-			setEnd(getNewEndStates());
-			
-		}
-
 	public Automaton(Integer[][] transitions, int start, ArrayList<Integer> end) {
 		this.start = start;
 		this.end = end;
@@ -67,14 +25,8 @@ public class Automaton {
 		this.transitions = transitions;
 	}
 
-	// Create a cell for the table
-	ArrayList<Integer> createCell(Integer i) {
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		list.add(i);
-		return list;
-	}
-
-	// Convert automaton to table
+	// Convert to ArrayLis<Intger> [][] first line for the characters and first
+	// column for the states
 	void toTable() {
 		// collect character list
 		Set<Integer> set = new HashSet<Integer>();
@@ -103,7 +55,7 @@ public class Automaton {
 			for (int j = 0; j < transitions[0].length; j++) {
 				Integer c = transitions[i][j];
 				if (c != null) {
-					// get char col number
+					// get char column number
 					k = 1;
 					boolean found = false;
 					while (!found && k < table[0].length) {
@@ -124,6 +76,60 @@ public class Automaton {
 		setTable(table);
 	}
 
+	// Eliminate the epsilon transitions
+	public void eliminateEpsilonTransitions() {
+		//for each state
+		for (int i = 1; i < table.length; i++) {
+			int k = 0;
+			//get epsilon closure
+			while (k < table[i][0].size()) {
+				Integer subState = table[i][0].get(k);
+				ArrayList<Integer> subClosure = table[subState + 1][1];
+				if (subClosure != null) {
+					table[i][0].addAll(subClosure);
+				}
+				//add transitions of the new added state to the epsilon transition
+				for (int j = 2; j < table[0].length; j++) {
+					ArrayList<Integer> newTransition = table[subState + 1][j];
+					if (newTransition != null)
+						table[i][j] = newTransition;
+				}
+				k++;
+			}
+		}
+		//erase the epsilon transitions
+		for (int i = 1; i < table.length; i++) {
+			table[i][1] = null;
+		}
+		//calculate the new final states
+		setEnd(getNewEndStates());
+
+	}
+
+	// Create new end states after epsilon elimination (every closure that contains an old final state
+	public ArrayList<Integer> getNewEndStates() {
+
+		ArrayList<Integer> new_final_states = new ArrayList<Integer>();
+		for (int i = 1; i < table.length; i++) {
+			ArrayList<Integer> cell = table[i][0];
+			for (int j = 0; j < cell.size(); j++) {
+				if (end.contains(cell.get(j))) {
+					new_final_states.add(i - 1);
+					break;
+				}
+			}
+		}
+		return new_final_states;
+
+	}
+
+	// Create a cell for the table
+	ArrayList<Integer> createCell(Integer i) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(i);
+		return list;
+	}
+
 	// Construct the n_equivalence for an automaton
 	ArrayList<ArrayList<Integer>> n_equivalence() {
 
@@ -139,7 +145,6 @@ public class Automaton {
 		current_equivalence.add(list);
 		current_equivalence.add(new ArrayList<Integer>(end));
 		while (!current_equivalence.equals(next_equivalence)) {
-			//System.out.println("N_equivalence : "+current_equivalence);
 			if (next_equivalence != null)
 				current_equivalence = next_equivalence;
 			next_equivalence = new ArrayList<ArrayList<Integer>>();
@@ -189,13 +194,15 @@ public class Automaton {
 		return next_equivalence;
 
 	}
-
+	//check if a state is a sink 
 	private boolean is_sink(int state) {
-		if(state == start) return false;
+		if (state == start)
+			return false;
 		for (int i = 1; i < table.length; i++) {
-			for (int j = 2 ; j < table[0].length ; j++) {
+			for (int j = 2; j < table[0].length; j++) {
 				ArrayList<Integer> cell = table[i][j];
-				if((cell != null) && (cell.contains(state))) return false;
+				if ((cell != null) && (cell.contains(state)))
+					return false;
 			}
 
 		}
@@ -232,7 +239,7 @@ public class Automaton {
 		return false;
 	}
 
-	// minimize
+	// minimize the automaton after epsilon elimination
 	void minimize() {
 		ArrayList<ArrayList<Integer>> n_equivalence = n_equivalence();
 		ArrayList<Integer> new_final_states = new ArrayList<Integer>();
@@ -240,14 +247,18 @@ public class Automaton {
 		// first row
 		for (int i = 0; i < table[0].length; i++)
 			minimized_table[0][i] = table[0][i];
-		// for each set aka new state
+		// for each set of the n_equivalence aka new state
 		for (int i = 0; i < n_equivalence.size(); i++) {
 			ArrayList<Integer> set = n_equivalence.get(i);
+			//fill the first cell of the line
 			minimized_table[i + 1][0] = new ArrayList(Arrays.asList(i));
 			for (int j = 0; j < set.size(); j++) {
+				//for each state in the set
 				Integer state = set.get(j);
+				//if a final state add the set in index as a new final state
 				if ((end.contains(state)) && (!new_final_states.contains(i)))
 					new_final_states.add(i);
+				//add the transitions of that state
 				for (int k = 2; k < table[0].length; k++) {
 					ArrayList<Integer> cell = table[state + 1][k];
 					if (cell != null) {
@@ -261,7 +272,7 @@ public class Automaton {
 		setEnd(new_final_states);
 		setTable(minimized_table);
 	}
-
+	//calculte the equivalent new state of an old state
 	private ArrayList<Integer> get_new_state(Integer old_state, ArrayList<ArrayList<Integer>> n_equivalence) {
 		for (int i = 0; i < n_equivalence.size(); i++) {
 			ArrayList<Integer> set = n_equivalence.get(i);
@@ -270,7 +281,7 @@ public class Automaton {
 		}
 		return null;
 	}
-
+	//search of the regex in a given text
 	ArrayList<MatchResponse> search(String path) throws IOException {
 		// Initialisation
 		ArrayList<MatchResponse> response = new ArrayList<MatchResponse>();
@@ -294,7 +305,7 @@ public class Automaton {
 				} else {
 					// mismatch
 					if (end.contains(current)) // acceptable state
-						response.add(new MatchResponse(line, startOfWord + 1, str.substring(startOfWord, i)));
+						response.add(new MatchResponse(line, startOfWord + 1, str.substring(startOfWord, i), str));
 
 					current = start;
 				}
@@ -302,14 +313,14 @@ public class Automaton {
 			}
 			// match in the end of a line
 			if (end.contains(current))
-				response.add(new MatchResponse(line, startOfWord + 1, str.substring(startOfWord, list.length)));
+				response.add(new MatchResponse(line, startOfWord + 1, str.substring(startOfWord, list.length), str));
 			line++;
 		}
 
 		return response;
 
 	}
-
+	//acceptable transition in the text
 	Integer accept(int c, int current) {
 		for (int i = 2; i < table[0].length; i++) {
 			if (table[0][i].get(0) == c) {

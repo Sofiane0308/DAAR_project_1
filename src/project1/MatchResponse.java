@@ -1,21 +1,34 @@
 package project1;
-
+//response of a search
 public class MatchResponse {
 
 	private int line;
 	private int col;
 	private String word;
+	private String lineString;
 
-	@Override
-	public String toString() {
-		return "\n[line=" + line + ", col=" + col + ", word=" + word + "]";
-	}
+	
 
-	public MatchResponse(int line, int col, String word) {
+	public MatchResponse(int line, int col, String word, String lineString) {
 		super();
 		this.line = line;
 		this.col = col;
 		this.word = word;
+		this.lineString = lineString;
+	}
+	
+
+
+	@Override
+	public String toString() {
+		return "\n MatchResponse [line=" + line + ", col=" + col + ", word=" + word + ", lineString=" + lineString + "]";
+	}
+	public String getLineString() {
+		return lineString;
+	}
+
+	public void setLineString(String lineString) {
+		this.lineString = lineString;
 	}
 
 	public int getLine() {

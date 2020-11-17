@@ -30,7 +30,6 @@ public class RegEx {
 
 	// MAIN
 	public static void main(String arg[]) {
-		// System.out.println("Welcome to Bogota, Mr. Thomas Anderson.");
 		String text_path = "";
 		if (arg.length > 1) {
 			regEx = arg[0];
@@ -43,60 +42,40 @@ public class RegEx {
 			System.out.print("  >> Please enter a text file path: ");
 			text_path = scanner.next();
 		}
-		/*
-		 * System.out.println("  >> Parsing regEx \"" + regEx + "\".");
-		 * System.out.println("  >> ...");
-		 */
 
 		if (regEx.length() < 1) {
 			System.err.println("  >> ERROR: empty regEx.");
 		} else {
-			// System.out.print(" >> ASCII codes: [" + (int) regEx.charAt(0));
-			/*for (int i = 1; i < regEx.length(); i++)
-				System.out.print("," + (int) regEx.charAt(i));
-			System.out.println("].");*/
 			try {
 				RegExTree ret = parse();
-				//System.out.println("  >> Tree result: " + ret.toString() + ".");
 				Automaton a = RegExTreeToAutomaton(ret);
-				//System.out.println("=== Transition table ===");
 				a.toTable();
-				/*print2D(a.getTable());
-				System.out.println("=== Final states ===");
-				System.out.println(a.getEnd());
-				System.out.println("=== Eliminating epsilon-transitions ===");*/
 				a.eliminateEpsilonTransitions();
-				/*print2D(a.getTable());
-				System.out.println("=== Final states ===");
-				System.out.println(a.getEnd());
-				System.out.println("=== Minimized table ===");*/
 				a.minimize();
-				/*print2D(a.getTable());
-				System.out.println("=== Final states ===");
-				System.out.println(a.getEnd());*/
 				ArrayList<MatchResponse> response = a.search(text_path);
 				response.forEach((rep) -> {
-					String line = rep.getLineString();
-					System.out.println(line.substring(0,rep.getCol() -1 ) +ANSI_RED + rep.getWord() + ANSI_RESET + line.substring(rep.getCol() + rep.getWord().length() -1, line.length()-1));
+					//for coloring
+					/*String line = rep.getLineString();
+					String before = line.substring(0,rep.getCol());
+					String word = line.substring(rep.getCol()-1,rep.getCol() +rep.getWord().length()-1);
+					String after = line.substring(rep.getCol() + rep.getWord().length()-2, line.length());
+					System.out.println(before +ANSI_RED + word + ANSI_RESET + after);*/
+					//whitout coloring
+					System.out.println(rep.getLineString());
 				});
 
 			} catch (FileNotFoundException e) {
 				System.err.println(">> ERROR:" + text_path + " file not found !");
 			} catch (Exception e) {
+				e.printStackTrace();
 				System.err.println("  >> ERROR: syntax error for regEx \"" + regEx + "\".");
 			}
 		}
 
-		/*
-		 * System.out.println("  >> ...");
-		 * System.out.println("  >> Parsing completed.");
-		 * System.out.println("Goodbye Mr. Anderson.");
-		 */
 
 	}
 
-	// Transform a regex tree to an automaton by recurcivly 1st son, 2nd son then
-	// root
+	// Transform a regex tree to an automaton by recurcivly 1st son, 2nd son then the root
 	public static Automaton RegExTreeToAutomaton(RegExTree tree) throws Exception {
 		if (tree.subTrees.isEmpty()) {
 			return buildOperandAutomaton(tree.root);

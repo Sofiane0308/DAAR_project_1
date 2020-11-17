@@ -27,7 +27,7 @@ public class RegEx {
 	public static void main(String arg[]) {
 		//System.out.println("Welcome to Bogota, Mr. Thomas Anderson.");
 		String text_path = "";
-		if (arg.length > 2) {
+		if (arg.length > 1) {
 			regEx = arg[0];
 			text_path = arg[1];
 		} else {
@@ -82,7 +82,7 @@ public class RegEx {
 
 	}
 	//Transform a regex tree to an automaton by recurcivly 1st son, 2nd son then root
-	private static Automaton RegExTreeToAutomaton(RegExTree tree) throws Exception {
+	public static Automaton RegExTreeToAutomaton(RegExTree tree) throws Exception {
 		if (tree.subTrees.isEmpty()) {
 			return buildOperandAutomaton(tree.root);
 		} else if (tree.root == RegEx.ETOILE) {

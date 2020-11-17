@@ -12,7 +12,7 @@ public class MatchResponse {
 	public MatchResponse(int line, int col, String word, String lineString) {
 		super();
 		this.line = line;
-		this.col = col;
+		this.col = col; //column of the prefix found
 		this.word = word;
 		this.lineString = lineString;
 	}
